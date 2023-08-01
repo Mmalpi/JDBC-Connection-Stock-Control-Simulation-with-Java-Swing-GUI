@@ -1,19 +1,34 @@
 package com.mmalpi.jdbc.factory;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
+
+import javax.sql.DataSource;
+
+import com.mchange.v2.c3p0.ComboPooledDataSource;
 
 
 public class ConnectionFactory {
+	//agrega tu propio user //Add your own user
+	private String user = "root";
+	//agrega tu propia contraseña //Add your own password
+	private String password = "mmalpipass";
+	
+	private DataSource dataSource;
+	
+	//Conection pool logic // logica para el pool de conexiones
+	public ConnectionFactory(){
+		var pooledDatraSource = new ComboPooledDataSource();
+		pooledDatraSource.setJdbcUrl("jdbc:mysql://localhost/control_de_stock?useTimeZone=true&serverTimeZone=UTC");
+		pooledDatraSource.setUser(user);
+		pooledDatraSource.setPassword(password);
+		pooledDatraSource.setMaxPoolSize(10);
+		this.dataSource = pooledDatraSource;
+	}
 	
 	public Connection recuperaConexion() throws SQLException{
-		//agrega tu propio user //Add your own user
-		String user = "root";
-		//agrega tu propia contraseña //Add your own password
-		String password = "mmalpipass";
-		Connection con = DriverManager.getConnection("jdbc:mysql://localhost/control_de_stock?useTimeZone=true&serverTimeZone=UTC", user, password);
-		return con;	
+		
+		return this.dataSource.getConnection();
 	}
 
 }
